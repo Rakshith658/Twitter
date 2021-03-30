@@ -1,5 +1,5 @@
 import { createStackNavigator } from '@react-navigation/stack';
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { 
     StyleSheet, 
     Text, 
@@ -10,6 +10,13 @@ import {
 } from 'react-native'
 import { AntDesign } from '@expo/vector-icons';
 import ProfilePicture from '../Components/ProfilePicture'
+
+import { API,graphqlOperation,Auth}from 'aws-amplify'
+import {createTweet}from '../src/graphql/mutations'
+import { getUser} from '../src/graphql/queries'
+
+import { useNavigation } from '@react-navigation/core';
+
 // import { TouchableOpacity } from 'react-native-gesture-handler';
 
 const color ='#1DA1F2'
@@ -18,20 +25,57 @@ const NewTweetScreen = () => {
 
     const [tweet, settweet] = useState("")
     const [imageUrl, setimageUrl] = useState("")
+    const [User, setUser] = useState(null)
 
-    const onPostTweet =()=>{
-        console.log(tweet);
+
+    const navigation = useNavigation();
+
+    const onPostTweet =async()=>{
+        try{
+            const currentUser = await Auth.currentAuthenticatedUser({ bypassCache: true });
+
+            const newTweet = {
+                content: tweet,
+                image:imageUrl,
+                userID: currentUser.attributes.sub,
+            }
+            await API.graphql(graphqlOperation(createTweet, { input: newTweet }));
+            navigation.goBack();
+        }catch(e){
+            console.log(e);
+        }
     }
+
+    useEffect(() => {
+        const fetchUser=async()=>{
+            const userInfo = await Auth.currentAuthenticatedUser({ bypassCache: true });
+            if (!userInfo) {
+                return;
+            }
+            try{
+                const userData = await API.graphql(graphqlOperation(getUser, { id: userInfo.attributes.sub }))
+                if (userData) {
+                setUser(userData.data.getUser);
+                console.log(userData.data.getUser);
+                }
+            }catch(e){
+                console.log(e);
+            }
+        }
+        fetchUser();
+        // console.log(User);
+    }, [])
+    
     return (
         <SafeAreaView style={styles.container}>
             <View style={styles.headerContainer}>
-                <AntDesign name="close" size={24} color={color} />
+                <AntDesign name="close" size={24} color={color} onPress={()=>navigation.goBack()}/>
                 <TouchableOpacity style={styles.button} onPress={onPostTweet}>
                     <Text style={styles.buttontext}>Tweet</Text>
                 </TouchableOpacity>
             </View>
             <View style={styles.newTweetContainer}>
-                <ProfilePicture image={'https://images.unsplash.com/photo-1526512340740-9217d0159da9?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&w=1000&q=80'}/>
+                <ProfilePicture image={User?.image}/>
                 <View style={styles.inputContainer}>
                     <TextInput
                         placeholder="what's happening...."
