@@ -5,6 +5,7 @@ import { StyleSheet, Text, View } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import MyTabs from './Navigation/bottomTab';
+import NewTweetStackScreen from './Screens/NewTweetScreen';
 
 
 const Stack = createStackNavigator();
@@ -14,6 +15,7 @@ export default function App() {
     <NavigationContainer >
       <Stack.Navigator screenOptions={{headerShown:false}}>
         <Stack.Screen name="Home" component={MyTabs} />
+        <Stack.Screen name="NewTweet" component={NewTweetStackScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );
