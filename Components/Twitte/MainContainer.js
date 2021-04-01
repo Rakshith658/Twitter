@@ -1,12 +1,13 @@
 import React from 'react'
 import { Image, StyleSheet, Text, View } from 'react-native'
+import { S3Image } from 'aws-amplify-react-native';
 import { AntDesign } from '@expo/vector-icons';
 import Footer from './Footer';
 import moment from "moment"
 
 
 const MainContainer = ({twitte}) => {
-    // console.log(twitte);
+    
     return (
         <View style={styles.container}>
             <View style={styles.tweetHeaderContainer}>
@@ -19,7 +20,7 @@ const MainContainer = ({twitte}) => {
             </View>
             <View >
                 <Text style={styles.content}>{twitte.content}</Text>
-                {!!twitte.image && <Image style={styles.image} source={{uri:twitte.image}} />}
+                {!!twitte.image && <S3Image style={styles.image} imgKey={twitte.image} />}
             </View>
             <Footer twitte={twitte}/>
         </View>

@@ -1,3 +1,4 @@
+import 'react-native-get-random-values';
 import { createStackNavigator } from '@react-navigation/stack';
 import React, { useEffect, useState } from 'react'
 import { 
@@ -6,12 +7,18 @@ import {
     View,
     TouchableOpacity, 
     SafeAreaView, 
-    TextInput 
+    TextInput ,
+    Platform,
+    Image
 } from 'react-native'
 import { AntDesign } from '@expo/vector-icons';
 import ProfilePicture from '../Components/ProfilePicture'
 
-import { API,graphqlOperation,Auth}from 'aws-amplify'
+import * as Permissions from 'expo-permissions';
+import * as ImagePicker from 'expo-image-picker';
+import { v4 as uuidv4 } from 'uuid';
+
+import { API,graphqlOperation,Auth,Storage}from 'aws-amplify'
 import {createTweet}from '../src/graphql/mutations'
 import { getUser} from '../src/graphql/queries'
 
@@ -30,13 +37,72 @@ const NewTweetScreen = () => {
 
     const navigation = useNavigation();
 
+    const getPermissionAsync = async () => {
+        if (Platform.OS !== 'web') {
+            const { status } = await Permissions.askAsync(Permissions.CAMERA_ROLL);
+            if (status !== 'granted') {
+            alert('Sorry, we need camera roll permissions to make this work!');
+            }
+        }
+    };
+
+    useEffect(() => {
+        getPermissionAsync();
+    }, [])
+
+    const pickImage = async () => {
+        try {
+          let result = await ImagePicker.launchImageLibraryAsync({
+            mediaTypes: ImagePicker.MediaTypeOptions.All,
+            allowsEditing: true,
+            aspect: [4, 3],
+            quality: 1,
+          });
+          if (!result.cancelled) {
+            setimageUrl(result.uri);
+          }
+    
+          console.log(result);
+        } catch (E) {
+          console.log(E);
+        }
+    };
+
+    const uploadImage = async () => {
+        try {
+          const response = await fetch(imageUrl);
+    
+          const blob = await response.blob();
+    
+          const urlParts = imageUrl.split('.');
+          const extension = urlParts[urlParts.length - 1];
+    
+          const key = `${uuidv4()}.${extension}`;
+          console.log(key);
+    
+          await Storage.put(key, blob);
+    
+          return key;
+    
+        } catch (e) {
+          console.log(e);
+        }
+        return '';
+    }
+
     const onPostTweet =async()=>{
+
+        let image;
+        if (!!imageUrl) {
+            image = await uploadImage();
+        }
+
         try{
             const currentUser = await Auth.currentAuthenticatedUser({ bypassCache: true });
 
             const newTweet = {
                 content: tweet,
-                image:imageUrl,
+                image,
                 userID: currentUser.attributes.sub,
             }
             await API.graphql(graphqlOperation(createTweet, { input: newTweet }));
@@ -85,12 +151,10 @@ const NewTweetScreen = () => {
                         value={tweet}
                         onChangeText={(value)=>settweet(value)}
                     />
-                    <TextInput
-                        placeholder="Image Url (optional)"
-                        style={styles.imageInput}
-                        value={imageUrl}
-                        onChangeText={(value)=>setimageUrl(value)}
-                    />
+                    <TouchableOpacity onPress={pickImage}>
+                        <Text style={styles.pickImage}>Pick a image</Text>
+                    </TouchableOpacity>
+                    <Image source={{ uri: imageUrl }} style={styles.image} />
                 </View>
             </View>
         </SafeAreaView>
@@ -141,4 +205,13 @@ const styles = StyleSheet.create({
         flexDirection:'row',
         padding:15
     },
+    pickImage: {
+        fontSize: 18,
+        color: color,
+        marginVertical: 10,
+    },
+    image: {
+        width: 150,
+        height: 150,
+    }
 })
