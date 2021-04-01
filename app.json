@@ -28,6 +28,6 @@
     "web": {
       "favicon": "./assets/favicon.png"
     },
-    "description": "Twitter clone with "
+    "description": "Twitter clone with Aws amplify"
   }
 }
