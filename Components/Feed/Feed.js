@@ -5,6 +5,8 @@ import Twitte from '../Twitte/Twitte'
 
 import { API, graphqlOperation } from 'aws-amplify';
 import {listTweets}from '../../src/graphql/queries'
+import UserFleetPreview from '../userFleet/UserFleetPreview';
+import UserfleetsLists from '../UserfleetsList/UserfleetsLists';
 
 const Feed = () => {
     const [tweets, setTweets] = useState([]);
@@ -33,7 +35,7 @@ const Feed = () => {
                 renderItem={({item})=><Twitte tweets={item}/>}
                 refreshing={loading}
                 onRefresh={fetchTweets}
-               
+                ListHeaderComponent={<UserfleetsLists/>}
             />
         </View>
     )

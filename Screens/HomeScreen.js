@@ -11,6 +11,7 @@ import TweetButton from '../Components/NewTweetButton/TweetButton';
 
 import{ API,graphqlOperation,Auth}from "aws-amplify"
 import { getUser} from '../src/graphql/queries'
+import UserFleetPreview from '../Components/userFleet/UserFleetPreview';
 
 
 const Stack = createStackNavigator();
@@ -76,6 +77,7 @@ export default HomeStackScreen
 
 const styles = StyleSheet.create({
     container: {
+        padding:10,
         flex: 1,
         alignItems: 'center',
         justifyContent: 'center',
