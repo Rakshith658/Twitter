@@ -1,14 +1,26 @@
+import { useNavigation } from '@react-navigation/core'
 import React from 'react'
 import { StyleSheet, Text, View } from 'react-native'
+import { TouchableOpacity } from 'react-native-gesture-handler'
 import ProfilePicture from '../ProfilePicture'
 
 const UserFleetPreview = ({user}) => {
+
+
+    const navigation=useNavigation()
+
+    const onPress=()=>{
+        navigation.navigate("Fleets",{userId:user.id})
+    }
+
     return (
         <View style={styles.container}>
-            <View style={styles.image}>
-                <ProfilePicture image={user.image} size={70}/>
-            </View>
-            <Text style={styles.username}>{user.username}</Text>
+            <TouchableOpacity onPress={onPress}>
+                <View style={styles.image}>
+                    <ProfilePicture image={user.image} size={70}/>
+                </View>
+                <Text style={styles.username}>{user.username}</Text>
+            </TouchableOpacity>
         </View>
     )
 }

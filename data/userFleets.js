@@ -16,6 +16,7 @@ export default [
           {
             "id": "1",
             "type": "TEXT",
+            "createdAt": "2020-11-04T12:05:39.955Z",
             "text": " Hi, there!Hi, there!Hi, there!Hi, there!Hi, there!Hi, there!Hi, there!Hi, there!Hi, there!"
           }
         ]

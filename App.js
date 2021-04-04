@@ -18,6 +18,7 @@ import { withAuthenticator } from 'aws-amplify-react-native'
 import{ getUser }from "./src/graphql/queries"
 import{ createUser }from "./src/graphql/mutations"
 import config from './src/aws-exports'
+import FleetsScreen from './Screens/FleetsScreen/FleetsScreen';
 Amplify.configure(config)
 
 
@@ -56,8 +57,6 @@ function App() {
           console.log('User already exists');
         }
       }
-
-
       // If it doesn't, create the user in the database
     }
     updateUser();
@@ -69,6 +68,7 @@ function App() {
       <Stack.Navigator screenOptions={{headerShown:false}}>
         <Stack.Screen name="Home" component={MyTabs} />
         <Stack.Screen name="NewTweet" component={NewTweetStackScreen} />
+        <Stack.Screen name="Fleets" component={FleetsScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );
