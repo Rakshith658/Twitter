@@ -1,9 +1,10 @@
 import moment from 'moment'
 import React from 'react'
-import { Image, StyleSheet, Text, View } from 'react-native'
+import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+// import { TouchableOpacity } from 'react-native-gesture-handler'
 import ProfilePicture from '../ProfilePicture'
 
-const FleetView = ({user,fleet}) => {
+const FleetView = ({user,fleet,goToNextFleet,goToprevFleet}) => {
     // console.log(user);
     // console.log(fleet);
     return (
@@ -19,6 +20,10 @@ const FleetView = ({user,fleet}) => {
                         <Text style={styles.time}>{moment(fleet.createdAt).fromNow()}</Text>
                     </View>
                 </View>
+            </View>
+            <View style={styles.buttonContainer}>
+                <TouchableOpacity style={{flex: 1}} onPress={() => goToprevFleet()} />
+                <TouchableOpacity style={{flex: 1}} onPress={() => goToNextFleet()} />
             </View>
         </View>
     )
@@ -71,5 +76,12 @@ const styles = StyleSheet.create({
         color:"#fff",
         fontSize:18,
         marginLeft:10
+    },
+    buttonContainer: {
+        width: '100%',
+        height: '100%',
+        position: 'absolute',
+        top: 0,
+        flexDirection: 'row'
     }
 })
