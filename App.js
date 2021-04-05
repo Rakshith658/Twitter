@@ -19,6 +19,7 @@ import{ getUser }from "./src/graphql/queries"
 import{ createUser }from "./src/graphql/mutations"
 import config from './src/aws-exports'
 import FleetsScreen from './Screens/FleetsScreen/FleetsScreen';
+import NewFleetScreen from './Screens/NewFleetScreen';
 Amplify.configure(config)
 
 
@@ -69,6 +70,7 @@ function App() {
         <Stack.Screen name="Home" component={MyTabs} />
         <Stack.Screen name="NewTweet" component={NewTweetStackScreen} />
         <Stack.Screen name="Fleets" component={FleetsScreen} />
+        <Stack.Screen name="NewFleet" component={NewFleetScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );
