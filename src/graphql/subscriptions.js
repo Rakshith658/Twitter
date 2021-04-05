@@ -20,6 +20,18 @@ export const onCreateUser = /* GraphQL */ `
         }
         nextToken
       }
+      fleets {
+        items {
+          id
+          type
+          text
+          image
+          userID
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
       createdAt
       updatedAt
     }
@@ -37,6 +49,18 @@ export const onUpdateUser = /* GraphQL */ `
         items {
           id
           content
+          image
+          userID
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
+      fleets {
+        items {
+          id
+          type
+          text
           image
           userID
           createdAt
@@ -68,6 +92,18 @@ export const onDeleteUser = /* GraphQL */ `
         }
         nextToken
       }
+      fleets {
+        items {
+          id
+          type
+          text
+          image
+          userID
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
       createdAt
       updatedAt
     }
@@ -87,6 +123,9 @@ export const onCreateTweet = /* GraphQL */ `
         email
         image
         tweets {
+          nextToken
+        }
+        fleets {
           nextToken
         }
         createdAt
@@ -123,6 +162,9 @@ export const onUpdateTweet = /* GraphQL */ `
         tweets {
           nextToken
         }
+        fleets {
+          nextToken
+        }
         createdAt
         updatedAt
       }
@@ -157,6 +199,9 @@ export const onDeleteTweet = /* GraphQL */ `
         tweets {
           nextToken
         }
+        fleets {
+          nextToken
+        }
         createdAt
         updatedAt
       }
@@ -169,6 +214,90 @@ export const onDeleteTweet = /* GraphQL */ `
           updatedAt
         }
         nextToken
+      }
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const onCreateFleet = /* GraphQL */ `
+  subscription OnCreateFleet {
+    onCreateFleet {
+      id
+      type
+      text
+      image
+      userID
+      user {
+        id
+        name
+        username
+        email
+        image
+        tweets {
+          nextToken
+        }
+        fleets {
+          nextToken
+        }
+        createdAt
+        updatedAt
+      }
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const onUpdateFleet = /* GraphQL */ `
+  subscription OnUpdateFleet {
+    onUpdateFleet {
+      id
+      type
+      text
+      image
+      userID
+      user {
+        id
+        name
+        username
+        email
+        image
+        tweets {
+          nextToken
+        }
+        fleets {
+          nextToken
+        }
+        createdAt
+        updatedAt
+      }
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const onDeleteFleet = /* GraphQL */ `
+  subscription OnDeleteFleet {
+    onDeleteFleet {
+      id
+      type
+      text
+      image
+      userID
+      user {
+        id
+        name
+        username
+        email
+        image
+        tweets {
+          nextToken
+        }
+        fleets {
+          nextToken
+        }
+        createdAt
+        updatedAt
       }
       createdAt
       updatedAt
@@ -188,6 +317,9 @@ export const onCreateLike = /* GraphQL */ `
         email
         image
         tweets {
+          nextToken
+        }
+        fleets {
           nextToken
         }
         createdAt
@@ -233,6 +365,9 @@ export const onUpdateLike = /* GraphQL */ `
         tweets {
           nextToken
         }
+        fleets {
+          nextToken
+        }
         createdAt
         updatedAt
       }
@@ -274,6 +409,9 @@ export const onDeleteLike = /* GraphQL */ `
         email
         image
         tweets {
+          nextToken
+        }
+        fleets {
           nextToken
         }
         createdAt

@@ -1,8 +1,11 @@
 import { useRoute } from '@react-navigation/core'
 import React, { useEffect, useState } from 'react'
-import { StyleSheet, Text, View } from 'react-native'
+import { ActivityIndicator, StyleSheet, Text, View } from 'react-native'
 import FleetView from '../../Components/FleetView/FleetView'
 import userFleets from '../../data/userFleets'
+
+import { API,graphqlOperation}from 'aws-amplify'
+import {listUsers}from './queries'
 
 const FleetsScreen = () => {
 
@@ -10,21 +13,32 @@ const FleetsScreen = () => {
 
     const { userId } = route.params;
 
-    // const [users, setUsers] = useState([]);
-    const [user, setuser] = useState(userFleets.find(u=>u.id===userId))
-    const [fleetIndex, setfleetIndex] = useState(0)
-    const [fleet, setfleet] = useState(user?.fleets?.items[fleetIndex])
+    const [users, setUsers] = useState([]);
+    const [user, setuser] = useState(null)
+    const [fleetIndex, setfleetIndex] = useState(-1)
+    const [fleet, setfleet] = useState(null)
 
 
     // console.log(userId);
+    useEffect(() => {
+        const fetchData = async () => {
+          try {
+            const data = await API.graphql(graphqlOperation(listUsers));
+            setUsers(data.data.listUsers.items);
+          } catch (e) {
+            console.log(e)
+          }
+        }
+        fetchData();
+    }, []);
 
-    // useEffect(() => {
-    //     if (!users || users.length === 0) {
-    //       return;
-    //     }
-    //     setuser(users.find(u => u.id === userId) || null);
-    //     setfleetIndex(0);
-    // }, [users])
+    useEffect(() => {
+        if (!users || users.length === 0) {
+          return;
+        }
+        setuser(users.find(u => u.id === userId) || null);
+        setfleetIndex(0);
+    }, [users])
 
     useEffect(() => {
 
@@ -33,17 +47,17 @@ const FleetsScreen = () => {
         }
       
         let userIndex = -1;
-        for(let i = 0; i < userFleets?.length; i++) {
-            if (userFleets[i].id === user.id) {
+        for(let i = 0; i < users?.length; i++) {
+            if (users[i].id === user.id) {
                 userIndex = i;
                 break;
             }
         }
       
         if (fleetIndex >= user?.fleets?.items.length) {
-            if (userFleets.length > userIndex + 1) {
+            if (users.length > userIndex + 1) {
                 // go to the next user
-                setuser(userFleets[userIndex + 1]);
+                setuser(users[userIndex + 1]);
                 setfleetIndex(0);
             } else {
                 setfleetIndex(user?.fleets?.items.length);
@@ -51,8 +65,8 @@ const FleetsScreen = () => {
         } else if (fleetIndex < 0) {
             // go to the prev user
             if(userIndex > 0){
-                setuser(userFleets[userIndex - 1]);
-                setfleetIndex(userFleets[userIndex - 1].fleets.items.length - 1);
+                setuser(users[userIndex - 1]);
+                setfleetIndex(users[userIndex - 1].fleets.items.length - 1);
             } else {
                 setfleetIndex(0)
             }
